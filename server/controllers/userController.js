@@ -1,6 +1,6 @@
-import cloudinary from "../lib/cloudinary";
-import { generateToken } from "../lib/utils";
-import User from "../models/User";
+import cloudinary from "../lib/cloudinary.js";
+import { generateToken } from "../lib/utils.js";
+import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
 
 //User signup controller
@@ -64,7 +64,7 @@ export const checkAuth = (req, res) => {
 
 
 //Controller to update user details
-export default updateProfile = async(req, res) => {
+export const updateProfile = async(req, res) => {
     try {
         const { profilePic, bio, fullName } = req.body;
         const userId = req.user._id;
