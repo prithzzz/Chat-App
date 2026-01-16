@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import { AuthContext } from '../../context/AuthContext.jsx';
 
 const Profile = () => {
+
+  const {authUser, updateProfile} = useContext(AuthContext)
 
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
@@ -11,7 +14,19 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/');
+    if(!selectedImage){
+      await updateProfile({fullName: name, bio});
+      navigate('/');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedImage);
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      await updateProfile({profilePic: base64Image, fullName: name, bio})
+      navigate('/');
+    }
   }
 
   return (
