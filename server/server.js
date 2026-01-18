@@ -18,8 +18,8 @@ export const io = new Server(server, {
 export const userSocketMap = {}; //{userId: socketId}
 
 //Socket.io connection handler
-io.on("connection", ()=> {
-    const userId = Socket.handshake.query.userId;
+io.on("connection", (socket)=> {
+    const userId = socket.handshake.query.userId;
     console.log("User connected", userId);
 
     if(userId) 
@@ -27,7 +27,7 @@ io.on("connection", ()=> {
 
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-    socket.on("Disconnect", ()=> {
+    socket.on("disconnect", ()=> {
         console.log("User Disconnected", userId);
         delete userSocketMap[userId];
         io.emit("getOnlineUsers", Object.keys(userSocketMap))
@@ -41,7 +41,7 @@ app.use(cors());
 //Routes
 app.use("/api/status", (req, res) => res.send("server is live"));
 app.use("/api/auth", userRouter);
-app.use("api/messages", messageRouter);
+app.use("/api/messages", messageRouter);
 
 //Mongodb database
 await connectDB(); 

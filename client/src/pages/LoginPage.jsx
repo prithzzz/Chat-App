@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import assets from '../assets/assets'
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext.jsx';
 
 const Login = () => {
     const [currState, setCurrState] = useState("Sign up");
@@ -48,15 +48,15 @@ const Login = () => {
             )}
 
             {currState === "Sign up" && isDataSubmitted && (
-                <textarea onChange={(e) => setBio(e.target.value)} value={bio}
-                rows={4} placeholder="Provide a bio" className='p-2 border border-gray-500 rounded-md focuS:outline-none focus:ring-2 focis:ring-indigo-500'></textarea>
+                <textarea onChange={(e) => setBio(e.target.value)} value={bio} 
+                rows={4} placeholder="Provide a bio" className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'></textarea>
             )}
 
-            <button type="submit" className='py-3 border border-purple-500 bg-gradient-to-r form-purple-400 to-violet-600 text-white rounded-md cursor-pointer'>
+            <button type="submit" className='py-3 border border-purple-500 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer'>
                 {currState === "Sign up" ? "Create Account" : "Login now"}
             </button>
 
-            <div className='flex fex-col gap-2'>
+            <div className='flex flex-col gap-2'>
                 {currState === "Sign up" ? (
                     <p className='text-sm text-gray-600'>Already have an account? <span onClick={()=>{setCurrState("Login"); setIsDataSubmitted(false)}} className='font-medium text-violet-500 cursor-pointer'>Login here</span></p>
                 ) : (

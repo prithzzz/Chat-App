@@ -4,7 +4,7 @@ import cloudinary from "../lib/cloudinary.js"
 import { io, userSocketMap } from "../server.js"
 
 //get users except the logged in user
-export const getUsersForSidebar = async () => {
+export const getUsersForSidebar = async (req, res) => {
     try {
         const userId = req.user._id;
         const filteredUsers = await User.find({_id: {$ne: userId}}).select("-password");
@@ -12,7 +12,7 @@ export const getUsersForSidebar = async () => {
         //count no of messages not seen
         const unseenMessages = {}
         const promises = filteredUsers.map(async(user) => {
-            const messages = await Message.find({senderId: user._id, recieberId: userId, seen: false})
+            const messages = await Message.find({senderId: user._id, recieverId: userId, seen: false})
 
             if(messages.length > 0){
                 unseenMessages[user._id] = messages.length;
@@ -77,13 +77,13 @@ export const sendMessage = async(req,res) => {
 
         const newMessage = await Message.create({
             senderId,
-            recieverId,
+            recieverId: receiverId,
             text,
             image: imageUrl
         })
 
         //emit new message to reciever socket
-        const receieverSocketId = userSocketMap[receiverId];
+        const receiverSocketId = userSocketMap[receiverId];
         if(receiverSocketId){
             io.to(receiverSocketId).emit("newMessage", newMessage);
         }

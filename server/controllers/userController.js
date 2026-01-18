@@ -46,7 +46,7 @@ export const login = async(req, res) => {
         return res.json({success: false, message:"Invalid credentials"})
     }
 
-    const token = generateToken(newUser._id)
+    const token = generateToken(userData._id)
 
     res.json({success: true, userData, token, message:"Login Successful"})
     } 
@@ -68,21 +68,19 @@ export const updateProfile = async(req, res) => {
     try {
         const { profilePic, bio, fullName } = req.body;
         const userId = req.user._id;
-        let updatedUser;
+        let updateData = { bio, fullName };
 
-        if(!profilePic){
-            updatedUser = await User.findById(userId, {bio, fullName}, {new: true});
-        }
-        else {
+        if(profilePic && profilePic !== ""){
             const upload = await cloudinary.uploader.upload(profilePic);
-
-            updatedUser = await User.findById(userId, {profilePic: upload.secure_url, bio, fullName}, {new: true});
+            updateData.profilePic = upload.secure_url;
         }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, {new: true});
         res.json({success: true, user: updatedUser})
 
     } catch (error) {
         console.log(error.message);
-        res.json({success: false, user: error.message});
+        res.json({success: false, message: error.message});
 
     }
 }
