@@ -12,7 +12,7 @@ export const getUsersForSidebar = async (req, res) => {
         //count no of messages not seen
         const unseenMessages = {}
         const promises = filteredUsers.map(async(user) => {
-            const messages = await Message.find({senderId: user._id, recieverId: userId, seen: false})
+            const messages = await Message.find({senderId: user._id, receiverId: userId, seen: false})
 
             if(messages.length > 0){
                 unseenMessages[user._id] = messages.length;
@@ -35,11 +35,11 @@ export const getMessages = async (req, res) => {
 
         const messages = await Message.find({
             $or: [
-                {senderId: myId, recieverId: selectedUserId},
-                {senderId: selectedUserId, recieverId: myId}
+                {senderId: myId, receiverId: selectedUserId},
+                {senderId: selectedUserId, receiverId: myId}
             ]
         })
-        await Message.updateMany({senderId:selectedUserId, recieverId: myId}, {seen: true});
+        await Message.updateMany({senderId:selectedUserId, receiverId: myId}, {seen: true});
 
         res.json({success: true, messages})
     } catch (error) {
@@ -77,7 +77,7 @@ export const sendMessage = async(req,res) => {
 
         const newMessage = await Message.create({
             senderId,
-            recieverId: receiverId,
+            receiverId: receiverId,
             text,
             image: imageUrl
         })
